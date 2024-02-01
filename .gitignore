@@ -1,0 +1,9 @@
+node_modules/ 
+
+# Local config
+.env*
+
+# Build tools
+build/
+dist/
+out/
