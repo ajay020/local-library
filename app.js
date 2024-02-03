@@ -3,8 +3,9 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-const mongoose = require("mongoose");
+
 require("dotenv").config();
+require("./config/config");
 
 const helmet = require("helmet");
 const RateLimit = require("express-rate-limit");
@@ -12,6 +13,7 @@ const RateLimit = require("express-rate-limit");
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const catalogRouter = require("./routes/catalog");
+const authRouter = require("./routes/authRoute");
 
 const app = express();
 
@@ -33,15 +35,6 @@ app.use(
   })
 );
 
-// Set up mongoose connection
-mongoose.set("strictQuery", false);
-const mongoDB = process.env.MONGODB_URI;
-
-main().catch((err) => console.log(err));
-async function main() {
-  await mongoose.connect(mongoDB);
-}
-
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
@@ -53,6 +46,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
+app.use("/auth", authRouter);
 app.use("/users", usersRouter);
 app.use("/catalog", catalogRouter);
 

@@ -11,6 +11,7 @@
     "serverstart": "DEBUG=locallibrary:* npm run devstart"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
@@ -21,6 +22,7 @@
     "express-validator": "^7.0.1",
     "helmet": "^7.1.0",
     "http-errors": "~1.6.3",
+    "jsonwebtoken": "^9.0.2",
     "luxon": "^3.4.4",
     "mongoose": "^8.1.1",
     "morgan": "~1.9.1",
