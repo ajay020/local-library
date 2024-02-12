@@ -2,10 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 // Require controller modules.
-const book_controller = require("../controllers/bookController");
-const author_controller = require("../controllers/authorController");
-const genre_controller = require("../controllers/genreController");
-const book_instance_controller = require("../controllers/bookinstanceController");
+const book_controller = require("../controllersForClient/bookController");
+const author_controller = require("../controllersForClient/authorController");
+const genre_controller = require("../controllersForClient/genreController");
+const book_instance_controller = require("../controllersForClient/bookinstanceController");
 const { authenticateToken } = require("../middleware/authMiddleware");
 const { authorizeRoles } = require("../middleware/authorizationMiddleware");
 
@@ -18,19 +18,31 @@ router.get("/", book_controller.index);
 router.get("/book/create", book_controller.book_create_get);
 
 // POST request for creating Book.
-router.post("/book/create", book_controller.book_create_post);
+router.post(
+  "/book/create",
+  authenticateToken,
+  book_controller.book_create_post
+);
 
 // GET request to delete Book.
 router.get("/book/:id/delete", book_controller.book_delete_get);
 
 // POST request to delete Book.
-router.post("/book/:id/delete", book_controller.book_delete_post);
+router.post(
+  "/book/:id/delete",
+  authenticateToken,
+  book_controller.book_delete_post
+);
 
 // GET request to update Book.
 router.get("/book/:id/update", book_controller.book_update_get);
 
 // POST request to update Book.
-router.post("/book/:id/update", book_controller.book_update_post);
+router.post(
+  "/book/:id/update",
+  authenticateToken,
+  book_controller.book_update_post
+);
 
 // GET request for one Book.
 router.get("/book/:id", book_controller.book_detail);
@@ -56,11 +68,7 @@ router.post(
 );
 
 // GET request to delete Author.
-router.get(
-  "/author/:id/delete",
-  authenticateToken,
-  author_controller.author_delete_get
-);
+router.get("/author/:id/delete", author_controller.author_delete_get);
 
 // POST request to delete Author.
 router.post(
@@ -84,10 +92,10 @@ router.post(
 );
 
 // GET request for one Author.
-router.get("/author/:id", authenticateToken, author_controller.author_detail);
+router.get("/author/:id", author_controller.author_detail);
 
 // GET request for list of all Authors.
-router.get("/authors", authenticateToken, author_controller.author_list);
+router.get("/authors", author_controller.author_list);
 
 /// GENRE ROUTES ///
 
@@ -95,19 +103,31 @@ router.get("/authors", authenticateToken, author_controller.author_list);
 router.get("/genre/create", genre_controller.genre_create_get);
 
 //POST request for creating Genre.
-router.post("/genre/create", genre_controller.genre_create_post);
+router.post(
+  "/genre/create",
+  authenticateToken,
+  genre_controller.genre_create_post
+);
 
 // GET request to delete Genre.
 router.get("/genre/:id/delete", genre_controller.genre_delete_get);
 
 // POST request to delete Genre.
-router.post("/genre/:id/delete", genre_controller.genre_delete_post);
+router.post(
+  "/genre/:id/delete",
+  authenticateToken,
+  genre_controller.genre_delete_post
+);
 
 // GET request to update Genre.
 router.get("/genre/:id/update", genre_controller.genre_update_get);
 
 // POST request to update Genre.
-router.post("/genre/:id/update", genre_controller.genre_update_post);
+router.post(
+  "/genre/:id/update",
+  authenticateToken,
+  genre_controller.genre_update_post
+);
 
 // GET request for one Genre.
 router.get("/genre/:id", genre_controller.genre_detail);
@@ -126,6 +146,7 @@ router.get(
 // POST request for creating BookInstance.
 router.post(
   "/bookinstance/create",
+  authenticateToken,
   book_instance_controller.bookinstance_create_post
 );
 
@@ -138,6 +159,7 @@ router.get(
 // POST request to delete BookInstance.
 router.post(
   "/bookinstance/:id/delete",
+  authenticateToken,
   book_instance_controller.bookinstance_delete_post
 );
 
@@ -150,6 +172,7 @@ router.get(
 // POST request to update BookInstance.
 router.post(
   "/bookinstance/:id/update",
+  authenticateToken,
   book_instance_controller.bookinstance_update_post
 );
 

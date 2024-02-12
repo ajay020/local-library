@@ -1,6 +1,7 @@
 const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
+const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 
@@ -16,6 +17,9 @@ const catalogRouter = require("./routes/catalog");
 const authRouter = require("./routes/authRoute");
 
 const app = express();
+
+// Enable CORS
+app.use(cors());
 
 // Set up rate limiter: maximum of twenty requests per minute
 const limiter = RateLimit({

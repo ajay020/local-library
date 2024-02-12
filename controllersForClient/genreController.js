@@ -9,8 +9,6 @@ exports.genre_list = asyncHandler(async (req, res, next) => {
   const allGenres = await Genre.find().sort({ name: 1 }).exec();
 
   res.json(allGenres);
-
-  //   res.render("genre_list", { title: "Genre List", genre_list: allGenres });
 });
 
 // Display detail page for a specific Genre.
@@ -56,37 +54,25 @@ exports.genre_create_post = [
     // Extract the validation errors from a request.
     const errors = validationResult(req);
 
-    // Create a genre object with escaped and trimmed data.
-    const genre = new Genre({ name: req.body.name });
-
+    // If there are validation errors, return a 400 Bad Request response
     if (!errors.isEmpty()) {
-      res.json({ error: errors.array() });
-
-      // There are errors. Render the form again with sanitized values/error messages.
-      //   res.render("genre_form", {
-      //     title: "Create Genre",
-      //     genre: genre,
-      //     errors: errors.array(),
-      //   });
-      return;
-    } else {
-      // Data from form is valid.
-      // Check if Genre with same name already exists.
-      const genreExists = await Genre.findOne({ name: req.body.name }).exec();
-      if (genreExists) {
-        res.json({ error: "Genre is already exist!" });
-
-        // Genre exists, redirect to its detail page.
-        // res.redirect(genreExists.url);
-      } else {
-        await genre.save();
-
-        res.json({ genre });
-
-        // New genre saved. Redirect to genre detail page.
-        // res.redirect(genre.url);
-      }
+      return res.status(400).json({ error: errors.array() });
     }
+
+    // Check if Genre with the same name already exists
+    const genreExists = await Genre.findOne({ name: req.body.name }).exec();
+    if (genreExists) {
+      // If the genre already exists, return a 409 Conflict response
+      return res.status(409).json({ error: "Genre already exists" });
+    }
+
+    // Create a new genre object
+    const genre = new Genre({ name: req.body.name });
+    // Save the new genre to the database
+    await genre.save();
+
+    // Return a 201 Created response with the created genre object
+    return res.status(201).json({ genre });
   }),
 ];
 
@@ -144,8 +130,7 @@ exports.genre_update_get = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
-  res.render("genre_form", {
-    title: "Update Genre",
+  res.status(200).json({
     genre: genre,
   });
 });

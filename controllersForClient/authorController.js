@@ -8,11 +8,6 @@ exports.author_list = asyncHandler(async (req, res, next) => {
   const allAuthors = await Author.find().sort({ family_name: 1 }).exec();
 
   res.json(allAuthors);
-
-  //   res.render("author_list", {
-  //     title: "Author List",
-  //     author_list: allAuthors,
-  //   });
 });
 
 // Display detail page for a specific Author.
@@ -31,12 +26,6 @@ exports.author_detail = asyncHandler(async (req, res, next) => {
   }
 
   res.json({ author, author_books: allBooksByAuthor });
-
-  //   res.render("author_detail", {
-  //     title: "Author Detail",
-  //     author: author,
-  //     author_books: allBooksByAuthor,
-  //   });
 });
 
 // Display Author create form on GET.
@@ -85,19 +74,14 @@ exports.author_create_post = [
 
     if (!errors.isEmpty()) {
       // There are errors. Render form again with sanitized values/errors messages.
-      res.render("author_form", {
-        title: "Create Author",
-        author: author,
-        errors: errors.array(),
-      });
-      return;
+      console.log(errors.array());
+      return res
+        .status(400)
+        .json({ message: "Data is not correct", error: errors.array() });
     } else {
-      // Data from form is valid.
-
       // Save author.
       await author.save();
-      // Redirect to new author record.
-      res.redirect(author.url);
+      return res.status(201).json({ author });
     }
   }),
 ];
@@ -112,11 +96,12 @@ exports.author_delete_get = asyncHandler(async (req, res, next) => {
 
   if (author === null) {
     // No results.
-    res.redirect("/catalog/authors");
+    res
+      .status(400)
+      .json({ message: "Not author found with the id" + req.params.id });
   }
 
-  res.render("author_delete", {
-    title: "Delete Author",
+  return res.status(200).json({
     author: author,
     author_books: allBooksByAuthor,
   });
@@ -131,17 +116,18 @@ exports.author_delete_post = asyncHandler(async (req, res, next) => {
   ]);
 
   if (allBooksByAuthor.length > 0) {
-    // Author has books. Render in same way as for GET route.
-    res.render("author_delete", {
-      title: "Delete Author",
+    return res.status(400).json({
+      error: "Delete all books by this author first",
       author: author,
       author_books: allBooksByAuthor,
     });
-    return;
   } else {
     // Author has no books. Delete object and redirect to the list of authors.
     await Author.findByIdAndDelete(req.body.authorid);
-    res.redirect("/catalog/authors");
+
+    return res.status(200).json({
+      author: author,
+    });
   }
 });
 
@@ -202,17 +188,13 @@ exports.author_update_post = [
     });
 
     if (!errors.isEmpty()) {
-      // There are errors. Render the form again with sanitized values and error messages.
-      res.render("author_form", {
-        title: "Update Author",
-        author: author,
-        errors: errors.array(),
-      });
-      return;
+      return res
+        .status(400)
+        .json({ message: "Data is not correct", error: errors.array() });
     } else {
       // Data from form is valid. Update the record.
       await Author.findByIdAndUpdate(req.params.id, author);
-      res.redirect(author.url);
+      return res.status(201).json({ author });
     }
   }),
 ];
