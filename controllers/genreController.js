@@ -8,9 +8,7 @@ const Book = require("../models/book");
 exports.genre_list = asyncHandler(async (req, res, next) => {
   const allGenres = await Genre.find().sort({ name: 1 }).exec();
 
-  res.json(allGenres);
-
-  //   res.render("genre_list", { title: "Genre List", genre_list: allGenres });
+  res.render("genre_list", { title: "Genre List", genre_list: allGenres });
 });
 
 // Display detail page for a specific Genre.
@@ -26,8 +24,6 @@ exports.genre_detail = asyncHandler(async (req, res, next) => {
     err.status = 404;
     return next(err);
   }
-
-  res.json({ genre, books: booksInGenre });
 
   res.render("genre_detail", {
     title: "Genre Detail",
@@ -60,31 +56,25 @@ exports.genre_create_post = [
     const genre = new Genre({ name: req.body.name });
 
     if (!errors.isEmpty()) {
-      res.json({ error: errors.array() });
-
       // There are errors. Render the form again with sanitized values/error messages.
-      //   res.render("genre_form", {
-      //     title: "Create Genre",
-      //     genre: genre,
-      //     errors: errors.array(),
-      //   });
+      res.render("genre_form", {
+        title: "Create Genre",
+        genre: genre,
+        errors: errors.array(),
+      });
       return;
     } else {
       // Data from form is valid.
       // Check if Genre with same name already exists.
       const genreExists = await Genre.findOne({ name: req.body.name }).exec();
       if (genreExists) {
-        res.json({ error: "Genre is already exist!" });
-
         // Genre exists, redirect to its detail page.
-        // res.redirect(genreExists.url);
+        res.redirect(genreExists.url);
       } else {
         await genre.save();
 
-        res.json({ genre });
-
         // New genre saved. Redirect to genre detail page.
-        // res.redirect(genre.url);
+        res.redirect(genre.url);
       }
     }
   }),

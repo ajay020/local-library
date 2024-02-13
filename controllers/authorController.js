@@ -7,12 +7,10 @@ const { body, validationResult } = require("express-validator");
 exports.author_list = asyncHandler(async (req, res, next) => {
   const allAuthors = await Author.find().sort({ family_name: 1 }).exec();
 
-  res.json(allAuthors);
-
-  //   res.render("author_list", {
-  //     title: "Author List",
-  //     author_list: allAuthors,
-  //   });
+  res.render("author_list", {
+    title: "Author List",
+    author_list: allAuthors,
+  });
 });
 
 // Display detail page for a specific Author.
@@ -30,13 +28,11 @@ exports.author_detail = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
-  res.json({ author, author_books: allBooksByAuthor });
-
-  //   res.render("author_detail", {
-  //     title: "Author Detail",
-  //     author: author,
-  //     author_books: allBooksByAuthor,
-  //   });
+  res.render("author_detail", {
+    title: "Author Detail",
+    author: author,
+    author_books: allBooksByAuthor,
+  });
 });
 
 // Display Author create form on GET.
@@ -155,8 +151,6 @@ exports.author_update_get = asyncHandler(async (req, res, next) => {
     err.status = 404;
     return next(err);
   }
-
-  console.log(author.date_of_birth_formatted);
 
   res.render("author_form", { title: "Update Author", author: author });
 });

@@ -21,22 +21,14 @@ exports.index = asyncHandler(async (req, res, next) => {
     Genre.countDocuments({}).exec(),
   ]);
 
-  res.status(200).json({
+  res.render("index", {
+    title: "Local Library Home",
     book_count: numBooks,
     book_instance_count: numBookInstances,
     book_instance_available_count: numAvailableBookInstances,
     author_count: numAuthors,
     genre_count: numGenres,
   });
-
-  //   res.render("index", {
-  //     title: "Local Library Home",
-  //     book_count: numBooks,
-  //     book_instance_count: numBookInstances,
-  //     book_instance_available_count: numAvailableBookInstances,
-  //     author_count: numAuthors,
-  //     genre_count: numGenres,
-  //   });
 });
 
 // Display list of all books.
@@ -46,8 +38,7 @@ exports.book_list = asyncHandler(async (req, res, next) => {
     .populate("author")
     .exec();
 
-  res.json(allBooks);
-  //   res.render("book_list", { title: "Book List", book_list: allBooks });
+  res.render("book_list", { title: "Book List", book_list: allBooks });
 });
 
 // Display detail page for a specific book.
@@ -64,8 +55,6 @@ exports.book_detail = asyncHandler(async (req, res, next) => {
     err.status = 404;
     return next(err);
   }
-
-  res.json({ book, bookInstances });
 
   res.render("book_detail", {
     title: book.title,
