@@ -9,8 +9,6 @@ const book_instance_controller = require("../controllersForClient/bookinstanceCo
 const { authenticateToken } = require("../middleware/authMiddleware");
 const { authorizeRoles } = require("../middleware/authorizationMiddleware");
 
-/// BOOK ROUTES ///
-
 // GET catalog home page.
 router.get("/", book_controller.index);
 
